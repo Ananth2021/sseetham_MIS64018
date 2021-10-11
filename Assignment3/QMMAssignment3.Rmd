@@ -1,0 +1,90 @@
+---
+title: "Assignment 3"
+author: "Ananth Kumar"
+date: "06/10/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+.libPaths("C:\\Users\\Ananth\\OneDrive\\Desktop\\MSBA Kent\\Fall 2021\\Quantittative management modelling\\Module 4 ")
+
+This notebook contains the code for the examples in Chapter 5. Specifically, for postoptimality analysis.
+
+```{r}
+library(lpSolveAPI)
+```
+
+***
+getwd()
+
+```{r}
+x <- read.lp("Assignment3.lp") # create an lp object x
+print(x)                          # display x
+```
+
+
+1. Solve the problem using lpsolve, or any other equivalent library in R.
+```{r}
+solve(x) # solving the given lp equation ,'0' optimal solution exists
+get.objective(x)  # get objective value of x which is profit =  696000 $
+get.variables(x)  # get values of decision variables of x which is 9 decision variables
+get.constraints(x)  # get constraint LHS  values
+
+
+```
+
+2. Identify the shadow prices, dual solution, and reduced costs
+
+```{r}
+get.sensitivity.rhs(x)  # get shadow prices of the constraints the shadow prices are 12.00 , 20.00 and 60.00 and the negative value is for non - negativity. By dualsfrom and dualstill we have wide range of of dual values for the constraints 
+get.sensitivity.obj(x)  # get reduced cost The reduced costs are expressed here from $objfrom and $objtill, 
+get.sensitivity.rhs(x)$duals[1] # the zero shadow price indicates that the profit will not be changed and the total profit stand at 696000 $
+```
+
+Further, identify the sensitivity of the above prices and costs. That is, specify the range of shadow prices and reduced cost within which the optimal solution will not change.
+
+
+```{r}
+get.sensitivity.rhs(x)  # get shadow prices of the constraints the shadow prices are 12.00 , 20.00 and 60.00 and the negative value is for non - negativity. By dualsfrom and dualstill we have wide range of of dual values for the constraints 
+get.sensitivity.obj(x)  # get reduced cost The reduced costs are expressed here from $objfrom and $objtill, 
+get.sensitivity.rhs(x)$duals[1] # the zero shadow price indicates that the profit will not be changed and the total profit stand at 696000 $
+
+
+# the range of the shadow price and reduced cost is from negative 1 to  positive 1 
+```
+
+```{r}
+rm(list=ls())
+
+dual <-read.lp ("dual1.lp")
+dual
+
+```
+```{r}
+solve(dual) # '0' optimal solution exists
+
+get.objective(dual)#  The objective value for the dual is 698000.4 while the objective in primal is 696000, there is a slight difference over 2000.4 for dual,as Y10 and Y11 are non existing constraints in primal 
+
+get.variables(dual)        #  values of decision variables for dual functions which are 11 
+
+get.constraints(dual) #  9 constraints of the dual function. 
+
+get.sensitivity.rhs(dual)#  shadow price of the dual are close to the variables in primal. Since there is a difference in Y10 and Y11 are non existing in primal there is an observed difference.
+
+get.sensitivity.obj(dual)  # the vales of the sensitive 
+
+```
+[1] 516.6667 177.7778   0.0000   0.0000 666.6667 166.6667   0.0000   0.0000 416.6667
+
+516.6667 177.7778   0.0000   0.0000 666.6667 166.6667   0.0000   0.0000 416.6667
+get.variables(dual)        #  values of decision variables
+
