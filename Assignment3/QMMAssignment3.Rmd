@@ -27,6 +27,8 @@ library(lpSolveAPI)
 getwd()
 
 ```{r}
+rm(list=ls())
+
 x <- read.lp("Assignment3.lp") # create an lp object x
 print(x)                          # display x
 ```
@@ -39,46 +41,58 @@ get.objective(x)  # get objective value of x which is profit =  696000 $
 get.variables(x)  # get values of decision variables of x which is 9 decision variables
 get.constraints(x)  # get constraint LHS  values
 
-
 ```
 
 2. Identify the shadow prices, dual solution, and reduced costs
 
 ```{r}
+
+get.dual.solution(x) # Dual values for reduced cost.
+
 get.sensitivity.rhs(x)  # get shadow prices of the constraints the shadow prices are 12.00 , 20.00 and 60.00 and the negative value is for non - negativity. By dualsfrom and dualstill we have wide range of of dual values for the constraints 
 get.sensitivity.obj(x)  # get reduced cost The reduced costs are expressed here from $objfrom and $objtill, 
-get.sensitivity.rhs(x)$duals[1] # the zero shadow price indicates that the profit will not be changed and the total profit stand at 696000 $
+get.sensitivity.rhs(x)$duals[1:11] #  shadow price 
+
+get.sensitivity.rhs(x)$duals[12:20] # reduced price 
 ```
 
 Further, identify the sensitivity of the above prices and costs. That is, specify the range of shadow prices and reduced cost within which the optimal solution will not change.
 
 
 ```{r}
-get.sensitivity.rhs(x)  # get shadow prices of the constraints the shadow prices are 12.00 , 20.00 and 60.00 and the negative value is for non - negativity. By dualsfrom and dualstill we have wide range of of dual values for the constraints 
-get.sensitivity.obj(x)  # get reduced cost The reduced costs are expressed here from $objfrom and $objtill, 
-get.sensitivity.rhs(x)$duals[1] # the zero shadow price indicates that the profit will not be changed and the total profit stand at 696000 $
-
+cbind(get.sensitivity.rhs(x)$duals[1:11], get.sensitivity.rhs(x)$dualsfrom[1:11],get.sensitivity.rhs(x)$dualstill[1:11])   # By dualsfrom and dualstill we have wide range of of dual values for the constraints 
 
 # the range of the shadow price and reduced cost is from negative 1 to  positive 1 
+
+
+cbind(get.sensitivity.rhs(x)$duals[12:20], get.sensitivity.rhs(x)$dualsfrom[12:20],get.sensitivity.rhs(x)$dualstill[12:20]) # reduced price range from -1 to 1 for o and the respective in the row wise.
+
 ```
 
 ```{r}
-rm(list=ls())
 
-dual <-read.lp ("dual1.lp")
+dual<-read.lp ("dual1.lp")
 dual
-
 ```
+
+
 ```{r}
-solve(dual) # '0' optimal solution exists
+# '0' optimal solution exists
+
+set.bounds(dual, lower = c(-Inf,-Inf), columns = 10:11)
+
+solve(dual)
 
 get.objective(dual)#  The objective value for the dual is 698000.4 while the objective in primal is 696000, there is a slight difference over 2000.4 for dual,as Y10 and Y11 are non existing constraints in primal 
 
 get.variables(dual)        #  values of decision variables for dual functions which are 11 
 
 get.constraints(dual) #  9 constraints of the dual function. 
+```
 
-get.sensitivity.rhs(dual)#  shadow price of the dual are close to the variables in primal. Since there is a difference in Y10 and Y11 are non existing in primal there is an observed difference.
+```{r}
+get.sensitivity.rhs(dual)$duals#  shadow price of the dual is equal to the variables in primal.
+```
 
 get.sensitivity.obj(dual)  # the vales of the sensitive 
 
